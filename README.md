@@ -1,7 +1,7 @@
 # Data Size
 A library for helping with size conversion and presentation
 
-![Continuous Integration](https://github.com/Filipedguy/datasize/workflows/Continuous%20Integration/badge.svg)[![codecov](https://codecov.io/gh/Filipedguy/datasize/branch/main/graph/badge.svg?token=KA47MWUROD)](https://codecov.io/gh/Filipedguy/datasize)
+![Continuous Integration](https://github.com/Filipedguy/datasize/workflows/Continuous%20Integration/badge.svg) [![codecov](https://codecov.io/gh/Filipedguy/datasize/branch/main/graph/badge.svg?token=KA47MWUROD)](https://codecov.io/gh/Filipedguy/datasize)
 
 ## Creating an data size object
 
