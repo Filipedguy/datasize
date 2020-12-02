@@ -1,7 +1,5 @@
 using FluentAssertions;
-using System;
-using System.IO;
-using System.Linq;
+using System.Globalization;
 using Xunit;
 
 namespace DataSize.UnitTests
@@ -171,9 +169,10 @@ namespace DataSize.UnitTests
         [InlineData(1180591620717411303424d, "1 ZB")]
         [InlineData(1208925819614629174706176d, "1 YB")]
         [InlineData(1267650600228229401496703205376d, "1048576 YB")]
-        [InlineData(917782921.216, "875,27 MB")]
+        [InlineData(917782921.216, "875.27 MB")]
         public void GivenBytes_Human_Should_Be_Expected_String(double totalBytes, string expectedHumanString)
         {
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             DataSize.FromBytes(totalBytes).Human.Should().Be(expectedHumanString);
         }
 
