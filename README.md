@@ -1,6 +1,8 @@
 # Data Size
 A library for helping with size conversion and presentation
 
+![Continuous Integration](https://github.com/Filipedguy/datasize/workflows/Continuous%20Integration/badge.svg)
+
 ## Creating an data size object
 
 ### By Constructor
