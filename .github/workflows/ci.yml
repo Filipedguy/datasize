@@ -22,9 +22,8 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal --logger:trx --results-directory ./test /p:CollectCoverage=true /p:CoverletOutputFormat:cobertura /p:CoverletOutput=./test/
     - name: Codecov
       uses: codecov/codecov-action@v1.0.15
       with:
         fail_ci_if_error: true
-        verbose: true
