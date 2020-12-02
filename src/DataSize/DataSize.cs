@@ -74,13 +74,6 @@ namespace DataSize
 
         public string Human => GetHumanString();
 
-        public void Add(int size, SizeType sizeType)
-        {
-            var sizeInBytes = GetSizeInBytes(size, sizeType);
-
-            Bytes += sizeInBytes;
-        }
-
         private static double GetSizeInBytes(double size, SizeType fromSize)
         {
             return GetSize(size, fromSize, SizeType.Bytes);

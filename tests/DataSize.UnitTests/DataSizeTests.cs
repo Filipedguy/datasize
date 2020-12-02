@@ -177,6 +177,24 @@ namespace DataSize.UnitTests
         }
 
         [Theory]
+        [InlineData(1, "1 B")]
+        [InlineData(1024, "1 KB")]
+        [InlineData(1048576, "1 MB")]
+        [InlineData(1073741824, "1 GB")]
+        [InlineData(1099511627776, "1 TB")]
+        [InlineData(1125899906842624, "1 PB")]
+        [InlineData(1152921504606846976, "1 EB")]
+        [InlineData(1180591620717411303424d, "1 ZB")]
+        [InlineData(1208925819614629174706176d, "1 YB")]
+        [InlineData(1267650600228229401496703205376d, "1048576 YB")]
+        [InlineData(917782921.216, "875.27 MB")]
+        public void GivenBytes_ToString_Should_Be_Expected_String(double totalBytes, string expectedHumanString)
+        {
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            DataSize.FromBytes(totalBytes).ToString().Should().Be(expectedHumanString);
+        }
+
+        [Theory]
         [InlineData(-1, -1)]
         [InlineData(0, 0)]
         [InlineData(1, 1)]
@@ -418,6 +436,53 @@ namespace DataSize.UnitTests
             leftDataSize += rightDataSize;
 
             leftDataSize.Bytes.Should().Be(expectedResponse);
+        }
+
+        [Theory]
+        [InlineData(-1, -1)]
+        [InlineData(0, 0)]
+        [InlineData(1, 1)]
+        [InlineData(100, 100)]
+        [InlineData(1024, 1024)]
+        [InlineData(-1, 1)]
+        [InlineData(0, 1)]
+        [InlineData(0, -1)]
+        [InlineData(1, -1)]
+        [InlineData(100, 1)]
+        [InlineData(1, 1024)]
+        public void GivenBytes_DataSizeEquals_Should_Be_Expected(double totalBytesLeft, double totalBytesRight)
+        {
+            var expectedResponse = totalBytesLeft == totalBytesRight;
+
+            var leftDataSize = DataSize.FromBytes(totalBytesLeft);
+            var rightDataSize = DataSize.FromBytes(totalBytesRight);
+
+            leftDataSize.Equals(rightDataSize).Should().Be(expectedResponse);
+        }
+
+        [Theory]
+        [InlineData(-1, -1)]
+        [InlineData(0, 0)]
+        [InlineData(1, 1)]
+        [InlineData(100, 100)]
+        [InlineData(1024, 1024)]
+        [InlineData(-1, 1)]
+        [InlineData(0, 1)]
+        [InlineData(0, -1)]
+        [InlineData(1, -1)]
+        [InlineData(100, 1)]
+        [InlineData(1, 1024)]
+        public void GivenBytes_DataSizeGetHashCodeEquality_Should_Be_Expected(double totalBytesLeft, double totalBytesRight)
+        {
+            var expectedResponse = totalBytesLeft == totalBytesRight;
+
+            var leftDataSize = DataSize.FromBytes(totalBytesLeft);
+            var rightDataSize = DataSize.FromBytes(totalBytesRight);
+
+            var leftHashCode = leftDataSize.GetHashCode();
+            var rightHashCode = rightDataSize.GetHashCode();
+
+            (leftHashCode == rightHashCode).Should().Be(expectedResponse);
         }
 
         private void AssertConversion(DataSize dataSize, double expectedBytes)
