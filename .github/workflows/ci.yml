@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  datasize-CI:
 
     runs-on: ubuntu-latest
 
@@ -22,4 +22,8 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=./test/
+    - name: Codecov
+      uses: codecov/codecov-action@v1.0.15
+      with:
+        fail_ci_if_error: true
