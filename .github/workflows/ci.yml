@@ -27,14 +27,6 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./test/
 
-    - name: Get Version
-      id: get_version
-      uses: battila7/get-version-action@v2.0.0
-
-    - run: echo ${{ github.ref }}
-    - run: echo ${{ steps.get_version.outputs.version }}
-    - run: echo ${{ steps.get_version.outputs.version-without-v }}
-
     - name: Pack
       run: dotnet pack -o package -c Release
 
@@ -75,11 +67,3 @@ jobs:
           
       - name: Publish package
         run: dotnet nuget push "package.nupkg" -k ${{ secrets.NUGET_KEY }}
-        
-      - name: Create a Release
-        uses: actions/create-release@v1.1.4
-        with:
-          # The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag
-          tag_name: 'v'
-          # The name of the release. For example, `Release v1.0.1`
-          release_name: 'v' 
