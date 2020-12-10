@@ -35,10 +35,10 @@ jobs:
         fallback: 1.0.0
         default-fragment: feature
         
-    - run: echo ${{version.output.next}}
+    - run: echo ${{steps.version.output.next}}
 
     - name: Pack
-      run: dotnet pack -o package -c Release -p:/VersionPrefix=${{version.output.next}}
+      run: dotnet pack -o package -c Release -p:/VersionPrefix=${{steps.version.output.next}}
 
     - name: Codecov
       uses: codecov/codecov-action@v1.0.15
