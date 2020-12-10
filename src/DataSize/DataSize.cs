@@ -4,32 +4,52 @@ namespace DataSize
 {
     public struct DataSize
     {
-        private const int _sizingFactor = 1024;
+        private const double ChangeTypeFactor = 1024;
 
-        public DataSize(double size, SizeType sizeType)
+        private const double BSizingFactor = 1;
+        private const double KBSizingFactor = BSizingFactor * ChangeTypeFactor;
+        private const double MBSizingFactor = KBSizingFactor * ChangeTypeFactor;
+        private const double GBSizingFactor = MBSizingFactor * ChangeTypeFactor;
+        private const double TBSizingFactor = GBSizingFactor * ChangeTypeFactor;
+        private const double PBSizingFactor = TBSizingFactor * ChangeTypeFactor;
+        private const double EBSizingFactor = PBSizingFactor * ChangeTypeFactor;
+        private const double ZBSizingFactor = EBSizingFactor * ChangeTypeFactor;
+        private const double YBSizingFactor = ZBSizingFactor * ChangeTypeFactor;
+
+        private const string BSuffix = "B";
+        private const string KBSuffix = "KB";
+        private const string MBSuffix = "MB";
+        private const string GBSuffix = "GB";
+        private const string TBSuffix = "TB";
+        private const string PBSuffix = "PB";
+        private const string EBSuffix = "EB";
+        private const string ZBSuffix = "ZB";
+        private const string YBSuffix = "YB";
+
+        private DataSize(double size, double sizingFactor)
         {
-            Bytes = GetSizeInBytes(size, sizeType);
+            Bytes = BytesFromSize(size, sizingFactor);
         }
 
-        public static DataSize FromBytes(double bytes) => new DataSize(bytes, SizeType.Bytes);
-        public static DataSize FromKiloBytes(double bytes) => new DataSize(bytes, SizeType.KiloBytes);
-        public static DataSize FromMegaBytes(double bytes) => new DataSize(bytes, SizeType.MegaBytes);
-        public static DataSize FromGigaBytes(double bytes) => new DataSize(bytes, SizeType.GigaBytes);
-        public static DataSize FromTeraBytes(double bytes) => new DataSize(bytes, SizeType.TeraBytes);
-        public static DataSize FromPetaBytes(double bytes) => new DataSize(bytes, SizeType.PetaBytes);
-        public static DataSize FromExaBytes(double bytes) => new DataSize(bytes, SizeType.ExaBytes);
-        public static DataSize FromZettaBytes(double bytes) => new DataSize(bytes, SizeType.ZettaBytes);
-        public static DataSize FromYottaBytes(double bytes) => new DataSize(bytes, SizeType.YottaBytes);
+        public static DataSize FromBytes(double bytes) => new DataSize(bytes, BSizingFactor);
+        public static DataSize FromKiloBytes(double bytes) => new DataSize(bytes, KBSizingFactor);
+        public static DataSize FromMegaBytes(double bytes) => new DataSize(bytes, MBSizingFactor);
+        public static DataSize FromGigaBytes(double bytes) => new DataSize(bytes, GBSizingFactor);
+        public static DataSize FromTeraBytes(double bytes) => new DataSize(bytes, TBSizingFactor);
+        public static DataSize FromPetaBytes(double bytes) => new DataSize(bytes, PBSizingFactor);
+        public static DataSize FromExaBytes(double bytes) => new DataSize(bytes, EBSizingFactor);
+        public static DataSize FromZettaBytes(double bytes) => new DataSize(bytes, ZBSizingFactor);
+        public static DataSize FromYottaBytes(double bytes) => new DataSize(bytes, YBSizingFactor);
 
         public double Bytes { get; private set; }
-        public double KiloBytes => SizeFromBytes(SizeType.KiloBytes);
-        public double MegaBytes => SizeFromBytes(SizeType.MegaBytes);
-        public double GigaBytes => SizeFromBytes(SizeType.GigaBytes);
-        public double TeraBytes => SizeFromBytes(SizeType.TeraBytes);
-        public double PetaBytes => SizeFromBytes(SizeType.PetaBytes);
-        public double ExaBytes => SizeFromBytes(SizeType.ExaBytes);
-        public double ZettaBytes => SizeFromBytes(SizeType.ZettaBytes);
-        public double YottaBytes => SizeFromBytes(SizeType.YottaBytes);
+        public double KiloBytes => SizeFromBytes(KBSizingFactor);
+        public double MegaBytes => SizeFromBytes(MBSizingFactor);
+        public double GigaBytes => SizeFromBytes(GBSizingFactor);
+        public double TeraBytes => SizeFromBytes(TBSizingFactor);
+        public double PetaBytes => SizeFromBytes(PBSizingFactor);
+        public double ExaBytes => SizeFromBytes(EBSizingFactor);
+        public double ZettaBytes => SizeFromBytes(ZBSizingFactor);
+        public double YottaBytes => SizeFromBytes(YBSizingFactor);
 
         public static bool operator ==(DataSize left, DataSize right)
         {
@@ -74,63 +94,53 @@ namespace DataSize
 
         public string Human => GetHumanString();
 
-        private static double GetSizeInBytes(double size, SizeType fromSize)
+        private static double BytesFromSize(double size, double sizingFactor)
         {
-            return GetSize(size, fromSize, SizeType.Bytes);
+            return size * sizingFactor;
         }
 
-        private double SizeFromBytes(SizeType desiredSize)
+        private double SizeFromBytes(double sizingFactor)
         {
-            return GetSize(Bytes, SizeType.Bytes, desiredSize);
+            return Bytes / sizingFactor;
         }
 
         private string GetHumanString()
         {
-            var allSizes = SizeTypeHelper.GetAll();
+            if (IsHumanReadableSize(Bytes))
+                return GetHumanFormattedSize(Bytes, BSuffix);
 
-            foreach (var size in SizeTypeHelper.GetAll())
-            {
-                var sizeFromBytes = Math.Round(SizeFromBytes(size), 2);
-                if (sizeFromBytes < 1000)
-                {
-                    return $"{sizeFromBytes} {size.Suffix()}";
-                }
-            }
+            if (IsHumanReadableSize(KiloBytes))
+                return GetHumanFormattedSize(KiloBytes, KBSuffix);
 
-            return $"{YottaBytes} {SizeType.YottaBytes.Suffix()}";
+            if (IsHumanReadableSize(MegaBytes))
+                return GetHumanFormattedSize(MegaBytes, MBSuffix);
+
+            if (IsHumanReadableSize(GigaBytes))
+                return GetHumanFormattedSize(GigaBytes, GBSuffix);
+
+            if (IsHumanReadableSize(TeraBytes))
+                return GetHumanFormattedSize(TeraBytes, TBSuffix);
+
+            if (IsHumanReadableSize(PetaBytes))
+                return GetHumanFormattedSize(PetaBytes, PBSuffix);
+
+            if (IsHumanReadableSize(ExaBytes))
+                return GetHumanFormattedSize(ExaBytes, EBSuffix);
+
+            if (IsHumanReadableSize(ZettaBytes))
+                return GetHumanFormattedSize(ZettaBytes, ZBSuffix);
+
+            return GetHumanFormattedSize(YottaBytes, YBSuffix);
         }
 
-        private static double GetSize(double fromSize, SizeType fromType, SizeType toType)
+        private bool IsHumanReadableSize(double size)
         {
-            var timesFactor = GetTimesFactor(fromType, toType);
-            var finalSize = fromSize;
-
-            for (var i = 0; i < timesFactor; i++)
-            {
-                finalSize = ApplyFactor(finalSize, fromType > toType);
-            }
-
-            return finalSize;
+            return size < 1000;
         }
 
-        private static int GetTimesFactor(SizeType fromSize, SizeType toSize)
+        private string GetHumanFormattedSize(double size, string suffix)
         {
-            var fromSizeValue = (int)fromSize;
-            var toSizeValue = (int)toSize;
-
-            return Math.Abs(fromSizeValue - toSizeValue);
-        }
-
-        private static double ApplyFactor(double currentSize, bool isIncreasing)
-        {
-            if (isIncreasing)
-            {
-                return currentSize * _sizingFactor;
-            }
-            else
-            {
-                return currentSize / _sizingFactor;
-            }
+            return $"{Math.Round(size, 2)} {suffix}";
         }
 
         public override string ToString()
