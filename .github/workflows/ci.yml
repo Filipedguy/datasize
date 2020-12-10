@@ -27,8 +27,18 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./test/
 
+    - name: Get Next Version
+      uses: PssbleTrngle/VersionManagment@v2
+      id: version
+      with:
+        token: ${{secrets.GITHUB_TOKEN}}
+        fallback: 1.0.0
+        default-fragment: feature
+        
+    - run: echo ${{version.next}}
+
     - name: Pack
-      run: dotnet pack -o package -c Release
+      run: dotnet pack -o package -c Release -p:/VersionPrefix=${{version.next}}
 
     - name: Codecov
       uses: codecov/codecov-action@v1.0.15
