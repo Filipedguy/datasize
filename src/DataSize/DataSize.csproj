@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Filipedguy</Authors>
+    <Description>A lib for helping with size conversions</Description>
+    <Copyright>Filipedguy</Copyright>
+    <RepositoryUrl>https://github.com/Filipedguy/datasize</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <PackageTags>sizing datasizing size conversion</PackageTags>
+    <PackageId>DataSizing</PackageId>
+    <Product>DataSizing</Product>
   </PropertyGroup>
 
 </Project>
