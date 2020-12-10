@@ -22,7 +22,7 @@ jobs:
         default-fragment: feature
 
     - name: Get Next Version Actions
-      uses: actions/version-managment@v1
+      uses: PssbleTrngle/VersionManagment@v2
       id: version_actions
       with:
         token: ${{secrets.GITHUB_TOKEN}}
