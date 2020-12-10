@@ -19,9 +19,6 @@ jobs:
         token: ${{secrets.GITHUB_TOKEN}}
         fallback: 1.0.0
         default-fragment: feature
-        
-    - run: echo ${{steps.version.outputs}}
-    - run: echo ${{steps.version.outputs.next}}
           
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -39,7 +36,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./test/
 
     - name: Pack
-      run: dotnet pack -o package -c Release -p:/VersionPrefix=${{steps.version.outputs.next}}
+      run: dotnet pack -o package -c Release /p:VersionPrefix=${{steps.version.outputs.next}}
 
     - name: Codecov
       uses: codecov/codecov-action@v1.0.15
