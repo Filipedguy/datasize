@@ -1,4 +1,5 @@
 using FluentAssertions;
+using System.Diagnostics;
 using System.Globalization;
 using Xunit;
 
@@ -483,6 +484,24 @@ namespace DataSize.UnitTests
             var rightHashCode = rightDataSize.GetHashCode();
 
             (leftHashCode == rightHashCode).Should().Be(expectedResponse);
+        }
+
+        [Fact]
+        public void GivenArray_DataSizeHuman_Performance_Should_Be_Bellow_Expected()
+        {
+            var watch = new Stopwatch();
+            watch.Start();
+
+            var sizingArray = new DataSize[10000];
+
+            foreach (var sizing in sizingArray)
+            {
+                _ = sizing.Human;
+            }
+
+            watch.Stop();
+
+            watch.ElapsedMilliseconds.Should().BeLessThan(1000);
         }
 
         private void AssertConversion(DataSize dataSize, double expectedBytes)
