@@ -1,4 +1,5 @@
 using FluentAssertions;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using Xunit;
@@ -501,7 +502,30 @@ namespace DataSize.UnitTests
 
             watch.Stop();
 
-            watch.ElapsedMilliseconds.Should().BeLessThan(1000);
+            watch.ElapsedMilliseconds.Should().BeLessThan(10);
+        }
+
+        [Fact]
+        public void GivenYottaBytesCollection_DataSizeHuman_Performance_Should_Be_Bellow_Expected()
+        {
+            var watch = new Stopwatch();
+            watch.Start();
+
+            var sizingCollection = new List<DataSize>();
+
+            for (var i = 0; i < 10000; i++)
+            {
+                sizingCollection.Add(DataSize.FromYottaBytes(1000));
+            }
+
+            foreach (var sizing in sizingCollection)
+            {
+                _ = sizing.Human;
+            }
+
+            watch.Stop();
+
+            watch.ElapsedMilliseconds.Should().BeLessThan(20);
         }
 
         private void AssertConversion(DataSize dataSize, double expectedBytes)
