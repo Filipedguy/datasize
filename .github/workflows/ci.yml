@@ -17,10 +17,23 @@ jobs:
       id: version
       with:
         token: ${{secrets.GITHUB_TOKEN}}
+        prefix: v
+        fallback: 1.0.0
+        default-fragment: feature
+
+    - name: Get Next Version Actions
+      uses: actions/version-managment@v1
+      id: version_actions
+      with:
+        token: ${{secrets.GITHUB_TOKEN}}
         fallback: 1.0.0
         default-fragment: feature
         
     - run: echo ${{steps.version.output}}
+    - run: echo ${{steps.version.output.next}}
+    - run: echo ${{steps.version_actions.output.next}}
+    - run: echo ${{steps.version_actions.output.Next}}
+    - run: echo ${{steps.version_actions.output}}
           
     - uses: actions/checkout@v2
     - name: Setup .NET Core
