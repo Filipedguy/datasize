@@ -1,0 +1,60 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  datasize-CI:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./test/
+    - name: Pack
+      run: dotnet pack -o package -c Release
+    - name: Codecov
+      uses: codecov/codecov-action@v1.0.15
+      with:
+        fail_ci_if_error: true
+    - name: Rename artifact
+      run: mv ./package/*.nupkg ./package.nupkg
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2.2.1
+      with:
+        name: 'ci-artifact'
+        path: './package.nupkg'
+        error: Fail the action with an error message
+        if-no-files-found: error
+        
+  nuget-Pack:
+    
+    if: github.ref == 'refs/heads/main'
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2.0.6
+        with:
+           name: 'ci-artifact'
+           
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.301
+          
+      - name: Publish package
+        run: dotnet nuget push "package.nupkg" -k ${{ secrets.NUGET_KEY }}
