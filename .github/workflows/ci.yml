@@ -12,6 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Get Next Version
+      uses: PssbleTrngle/VersionManagment@v2
+      id: version
+      with:
+        token: ${{secrets.GITHUB_TOKEN}}
+        fallback: 1.0.0
+        default-fragment: feature
+          
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
@@ -28,7 +36,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./test/
 
     - name: Pack
-      run: dotnet pack -o package -c Release
+      run: dotnet pack -o package -c Release /p:VersionPrefix=${{steps.version.outputs.next}}
 
     - name: Codecov
       uses: codecov/codecov-action@v1.0.15
@@ -69,3 +77,39 @@ jobs:
           
       - name: Publish package
         run: dotnet nuget push ./package.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_KEY }}
+
+  create-release:
+    
+    needs: [nuget-Pack]
+    
+    if: github.ref == 'refs/heads/main'
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Get Next Label
+        uses: PssbleTrngle/VersionManagment@v2
+        id: label
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+          prefix: v
+          fallback: 1.0.0
+          default-fragment: feature
+
+      - name: Commit tagger
+        uses: tvdias/github-tagger@v0.0.2
+        with:
+          # The GITHUB_TOKEN secret
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+          # Tag text
+          tag: ${{steps.label.outputs.next}}
+
+      - name: Create a Release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag
+          tag_name: ${{steps.label.outputs.next}}
+          # The name of the release. For example, `Release v1.0.1`
+          release_name: Release ${{steps.label.outputs.next}}
