@@ -75,6 +75,14 @@ jobs:
           repo-token: ${{secrets.GITHUB_TOKEN}}
           # Tag text
           tag: ${{steps.label.outputs.next}}
+
+      - name: Create a Release
+        uses: actions/create-release@v1.1.4
+        with:
+          # The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag
+          tag_name: ${{steps.label.outputs.next}}
+          # The name of the release. For example, `Release v1.0.1`
+          release_name: Release ${{steps.label.outputs.next}}
         
   nuget-Pack:
     
