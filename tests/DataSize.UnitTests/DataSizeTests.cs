@@ -502,7 +502,7 @@ namespace DataSize.UnitTests
 
             watch.Stop();
 
-            watch.ElapsedMilliseconds.Should().BeLessThan(10);
+            watch.ElapsedMilliseconds.Should().BeLessThan(20);
         }
 
         [Fact]
