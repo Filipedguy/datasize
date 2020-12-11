@@ -53,6 +53,28 @@ jobs:
         path: './package.nupkg'
         error: Fail the action with an error message
         if-no-files-found: error
+
+  create-release:
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Get Next Label
+        uses: PssbleTrngle/VersionManagment@v2
+        id: label
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+          prefix: v
+          fallback: 1.0.0
+          default-fragment: feature
+
+      - name: Commit tagger
+        uses: tvdias/github-tagger@v0.0.2
+        with:
+          # The GITHUB_TOKEN secret
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+          # Tag text
+          tag: ${{steps.version.outputs.next}}
         
   nuget-Pack:
     
