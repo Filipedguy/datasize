@@ -53,8 +53,36 @@ jobs:
         path: './package.nupkg'
         error: Fail the action with an error message
         if-no-files-found: error
+        
+  nuget-Pack:
+    
+    needs: [datasize-CI]
+    
+    if: github.ref == 'refs/heads/main'
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2.0.6
+        with:
+           name: 'ci-artifact'
+           
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.301
+
+      - run: ls
+          
+      - name: Publish package
+        run: dotnet nuget push ./package.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_KEY }}
 
   create-release:
+    
+    needs: [nuget-Pack]
+    
+    if: github.ref == 'refs/heads/main'
     
     runs-on: ubuntu-latest
     
@@ -85,27 +113,3 @@ jobs:
           tag_name: ${{steps.label.outputs.next}}
           # The name of the release. For example, `Release v1.0.1`
           release_name: Release ${{steps.label.outputs.next}}
-        
-  nuget-Pack:
-    
-    needs: [datasize-CI]
-    
-    if: github.ref == 'refs/heads/main'
-    
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2.0.6
-        with:
-           name: 'ci-artifact'
-           
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.301
-
-      - run: ls
-          
-      - name: Publish package
-        run: dotnet nuget push ./package.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_KEY }}
