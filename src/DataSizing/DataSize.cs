@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataSize
+namespace DataSizing
 {
     public struct DataSize
     {

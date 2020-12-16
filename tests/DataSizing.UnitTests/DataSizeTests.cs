@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using Xunit;
 
-namespace DataSize.UnitTests
+namespace DataSizing.UnitTests
 {
     public class DataSizeTest
     {
