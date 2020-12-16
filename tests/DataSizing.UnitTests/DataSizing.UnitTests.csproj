@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DataSize\DataSizing.csproj" />
+    <ProjectReference Include="..\..\src\DataSizing\DataSizing.csproj" />
   </ItemGroup>
 
 </Project>
